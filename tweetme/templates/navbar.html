@@ -1,0 +1,27 @@
+<nav class="navbar navbar-dark bg-primary">
+    <div class="container bg-primary">
+
+        <div class="navbar-header">
+
+            <a class="navbar-brand" href="{% url 'tweet:list' %}" style="color:white">Twitter</a>
+        </div>
+        {% include "search_form.html" %}
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            {% if request.user.is_authenticated %}
+            <ul class="nav navbar-nav navbar-right">
+                
+				<li><a href="{% url 'tweet:detail' pk=user.id %}" style="color:white">Profile</a></li>
+				<li><a href="{% url 'accounts:logout' %}" style="color:white">Logout</a></li>
+                  
+            </ul>
+
+            {% else %}
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="{% url 'accounts:login' %}" style="color:white">Login</a></li>
+                <li><a href="{% url 'accounts:signup' %}" style="color:white">Register</a></li>
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+

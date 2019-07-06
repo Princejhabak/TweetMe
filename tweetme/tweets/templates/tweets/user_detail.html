@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+<!--{% block script %}-->
+<!--<script>-->
+<!--$(document).ready(function(){-->
+<!--loadTweetContainer("tweet-container")-->
+<!--});-->
+<!--</script>-->
+<!--{% endblock script %}-->
+
+{% block content %}
+<div class='row'>
+    <div class='col-sm-3 col-xs-12'>
+        <h1>{{ xuser.username}} </h1>
+        <hr/>
+        <p>Followers: {{ followers.followers.count }}</p>
+        <p>
+            {% if user != xuser%}
+
+                {% if user in followers_list %}
+                <a href="{% url 'accounts:unfollow' pk=xuser.id%}">Unfollow</a>
+                {% else %}
+                <a href="{% url 'accounts:follow' pk=xuser.id%}">Follow</a>
+                {% endif %}
+            {% endif %}
+        </p>
+        <hr/>
+        <h2>Following
+            <small>{{ following.count }}</small>
+        </h2>
+
+        {% for x in following %}
+        <a href="{% url 'tweet:detail' pk=x.user.id %}">{{ x.user.username }}</a><br/>
+        {% empty %}
+        <h4>Not following any users</h4>
+        {% endfor %}
+
+        <hr/>
+        <h2>Followers</h2>
+        {% for x in followers.followers.all %}
+        <a href="{% url 'tweet:detail' pk=x.id %}">{{ x.username }}</a><br>
+        {% empty %}
+        <h4>Not followed by any users</h4>
+        {% endfor %}
+
+        <hr/>
+
+    </div>
+    <br><br>
+
+    <div class='col-sm-9 col-xs-12' style="background-color:white; width: 50%; margin: auto; padding-right:20px; padding-left:20px; padding-top:10px;">
+        <h1>Tweets</h1><hr>
+
+
+        {% for tweet in tweets %}
+        <div>
+
+            {% if tweet.retweeted == True %}
+            <p style="color:gray"><i>@{{tweet.retweetd_by.username}}&nbsp Retweeted</i></p>
+            {% endif %}
+
+        <p><a href="{% url 'tweet:detail' pk=tweet.user.id %}">@{{tweet.user}}</a>&nbsp&nbsp&nbsp&nbsp
+            <a href="" data-toggle="tooltip" title="{{tweet.timestamp}}" style="color:black">
+                <small>{{tweet.timestamp|date:"d M Y"}}</small>
+            </a></p>
+
+        <br>
+            <a href="{% url 'tweet:reply' pk=tweet.pk%}" style="color:black">{{tweet.content|linebreaks }}</a>
+        <br>
+
+        <small>
+
+            <a href="{% url 'tweet:reply' pk=tweet.pk%}"><i class="fas fa-reply fa-lg"></i></a> &nbsp&nbsp&nbsp&nbsp
+            <a href="{% url 'tweet:retweet' pk=tweet.pk%}"><i class="fas fa-retweet fa-lg"></i></a> &nbsp&nbsp&nbsp&nbsp
+
+            <a href="{% url 'tweet:like' pk=tweet.pk%}"><i class="far fa-thumbs-up fa-lg"></i>&nbsp
+            {{tweet.tweetlike_set.first.liked_by.count}}
+            </a> &nbsp&nbsp&nbsp&nbsp
+
+
+            {% if user == tweet.retweetd_by %}
+            <a href="{% url 'tweet:delete' pk=tweet.pk%}" style="color:red"><i class="far fa-trash-alt fa-lg"></i></a>
+            {% endif %}
+        </small>
+        <hr>
+        </div>
+        {% endfor %}
+
+    </div>
+
+</div>
+<br><br><br>
+{% endblock content %}
+
+  

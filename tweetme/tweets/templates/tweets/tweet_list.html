@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block content %}
+
+<br><br>
+<form method="post" style="width:50%; margin: auto; " id="tweet-form">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    <input type="submit" value="Tweet" class="btn btn-primary">
+</form>
+
+<br><br>
+<div style="background-color:white; width: 50%; margin: auto; padding-right:20px; padding-left:20px; padding-top:10px;">
+
+    <h2>Tweets</h2>
+    <hr>
+
+
+    {% for tweet in tweets %}
+
+    {% if tweet.retweeted == True %}
+    <p style="color:gray"><i>@{{tweet.retweetd_by.username}}&nbsp Retweeted</i></p>
+    {% endif %}
+    <p><a href="{% url 'tweet:detail' pk=tweet.user.id %}">@{{tweet.user}}</a>&nbsp&nbsp&nbsp&nbsp
+        <a href="" data-toggle="tooltip" title="{{tweet.timestamp}}" style="color:black">
+            <small>{{tweet.timestamp|date:"d M Y"}}</small>
+        </a></p>
+
+    <br>
+    <a href="{% url 'tweet:reply' pk=tweet.pk%}" style="color:black">{{tweet.content|linebreaks }}</a>
+    <br>
+
+    <small>
+        <a href="{% url 'tweet:reply' pk=tweet.pk%}"><i class="fas fa-reply fa-lg"></i></a> &nbsp&nbsp&nbsp&nbsp
+        <a href="{% url 'tweet:retweet' pk=tweet.pk%}"><i class="fas fa-retweet fa-lg"></i></a> &nbsp&nbsp&nbsp&nbsp
+
+        <a href="{% url 'tweet:like' pk=tweet.pk%}"><i class="far fa-thumbs-up fa-lg"></i>&nbsp
+            {{tweet.tweetlike_set.first.liked_by.count}}
+        </a>
+    </small>
+    <hr>
+
+    {% endfor %}
+
+</div>
+<br><br>
+
+<div class="container" style="text-align: center">
+<div class="pagination" style="margin:auto">
+    <span class="step-links">
+        {% if tweets.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ tweets.previous_page_number }}" style="margin-left:15px">previous</a>
+        {% endif %}
+
+        <span class="current" style="margin-right:15px; margin-left:15px">
+            Page {{ tweets.number }} of {{ tweets.paginator.num_pages }}
+        </span>
+
+        {% if tweets.has_next %}
+            <a href="?page={{ tweets.next_page_number }}" style="margin-right:15px">next</a>
+            <a href="?page={{ tweets.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+</div>
+
+<br><br>
+
+
+
+
+<script>
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();
+});
+
+</script>
+
+{% endblock content %}

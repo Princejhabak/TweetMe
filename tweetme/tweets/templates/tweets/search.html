@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div class='row'>
+    <div class='col-sm-12'>
+        {% if request.GET.q %}
+        <p class='lead'>Results for {{ request.GET.q }}</p>
+        <hr/>
+        {% endif %}
+    </div>
+    <div class='col-sm-9 '>
+        <h1>Tweets</h1>
+        <hr/>
+
+        <div style="background-color:white; width: 50%; padding-right:20px; padding-left:20px; padding-top:10px;">
+            {% for tweet in tweets %}
+            <div>
+                {% if tweet.retweeted == True %}
+                <p style="color:gray"><i>@{{tweet.retweetd_by.username}}&nbsp Retweeted</i></p>
+                {% endif %}
+                <p><a href="{% url 'tweet:detail' pk=tweet.user.id %}">@{{tweet.user}}</a>&nbsp&nbsp&nbsp&nbsp
+                    <a href="" data-toggle="tooltip" title="{{tweet.timestamp}}" style="color:black">
+                        <small>{{tweet.timestamp|date:"d M Y"}}</small>
+                    </a></p>
+
+                <br>
+                {{tweet.content|linebreaks }}
+                <hr>
+            </div>
+            {% empty %}
+            No tweets found
+            {% endfor %}
+
+        </div>
+    </div>
+    <div class='col-sm-3'>
+        <h1>Users</h1>
+        <hr/>
+        {% for user in users %}
+        <h4><a href="{% url 'tweet:detail' pk=user.id %}">{{ user}}</a></h4><br/>
+
+        {% empty %}
+        <p>No users found</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}

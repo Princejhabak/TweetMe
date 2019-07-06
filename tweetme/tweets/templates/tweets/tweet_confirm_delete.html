@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<form action="" method="post">{% csrf_token %}
+    <h4>Are you sure you want to delete the tweet ?</h4>
+    <br>
+    <p>{{ object.content }}</p>
+    <br>
+    <input type="submit" value="Delete" class="btn btn-danger"/> &nbsp&nbsp&nbsp&nbsp
+    <a href="{% url 'tweet:detail' pk=object.user.pk %}">Cancel</a>
+
+</form>
+
+{% endblock %}
